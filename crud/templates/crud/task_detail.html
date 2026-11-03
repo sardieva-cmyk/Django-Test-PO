@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>{{ task.title }}</title>
+</head>
+<body>
+    <h1>{{ task.title }}</h1>
+    <p>{{ task.description|linebreaksbr }}</p>
+    <p><a href="{% url 'crud:task_update' task.pk %}">Изменить задачу</a></p>
+    <p><a href="{% url 'crud:task_delete' task.pk %}">Удалить задачу</a></p>
+    <a href="{% url 'crud:task_list' %}">К списку задач</a>
+</body>
+</html>

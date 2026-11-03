@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Список задач</title>
+</head>
+<body>
+    <h1>Задачи</h1>
+    <p><a href="{% url 'crud:task_create' %}">Создать задачу</a></p>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                <a href="{% url 'crud:task_detail' task.pk %}">{{ task.title }}</a>
+                <a href="{% url 'crud:task_update' task.pk %}">Изменить</a>
+                <a href="{% url 'crud:task_delete' task.pk %}">Удалить</a>
+            </li>
+        {% empty %}
+            <li>Задач пока нет.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

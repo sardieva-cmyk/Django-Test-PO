@@ -21,6 +21,13 @@ class BlogListDetailTest(TestCase):
         self.assertContains(response, "Первая статья")
         self.assertContains(response, "Вторая статья")
 
+    def test_blog_urls_are_mounted_under_blogs(self):
+        self.assertEqual(reverse("blog_list"), "/blogs/")
+        self.assertEqual(
+            reverse("blog_detail", kwargs={"pk": self.blog1.pk}),
+            f"/blogs/{self.blog1.pk}/",
+        )
+
     def test_list_view_context_contains_correct_ids(self):
         response = self.client.get(reverse("blog_list"))
         blogs = response.context["blogs"]
