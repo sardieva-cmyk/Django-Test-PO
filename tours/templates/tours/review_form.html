@@ -1,0 +1,12 @@
+{% extends "tours/base.html" %}
+
+{% block title %}Отзыв — {{ tour.title }}{% endblock %}
+
+{% block content %}
+    <h1>Отзыв о туре «{{ tour.title }}»</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Отправить отзыв</button>
+    </form>
+{% endblock %}

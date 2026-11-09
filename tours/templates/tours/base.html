@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Туры{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'tours:tour_list' %}">Туры</a>
+        {% if user.is_authenticated %}
+            <span>Здравствуйте, {{ user.username }}!</span>
+            <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'tours:signup' %}">Регистрация</a>
+            <a href="{% url 'account_login' %}">Войти</a>
+        {% endif %}
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>

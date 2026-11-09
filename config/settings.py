@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "blog.apps.BlogConfig",
     "crud.apps.CrudConfig",
+    "tours.apps.ToursConfig",
 ]
 
 MIDDLEWARE = [
@@ -64,3 +65,6 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LOGIN_URL = "account_login"
+LOGIN_REDIRECT_URL = "tours:tour_list"
+LOGOUT_REDIRECT_URL = "tours:tour_list"

@@ -1,0 +1,18 @@
+{% extends "tours/base.html" %}
+
+{% block title %}Каталог туров{% endblock %}
+
+{% block content %}
+    <h1>Каталог туров</h1>
+    <ul>
+        {% for tour in tours %}
+            <li>
+                <a href="{% url 'tours:tour_detail' tour.pk %}">{{ tour.title }}</a>
+                — {{ tour.price }} ₸
+                {% for category in tour.categories.all %}{{ category.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            </li>
+        {% empty %}
+            <li>Туров пока нет.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

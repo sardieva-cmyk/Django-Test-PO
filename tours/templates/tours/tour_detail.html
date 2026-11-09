@@ -1,0 +1,27 @@
+{% extends "tours/base.html" %}
+
+{% block title %}{{ tour.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ tour.title }}</h1>
+    <p>{{ tour.description }}</p>
+    <p>Длительность: {{ tour.duration_minutes }} мин.</p>
+    <p>Цена: {{ tour.price }} ₸</p>
+    <p>Категории:
+        {% for category in tour.categories.all %}{{ category.name }}{% if not forloop.last %}, {% endif %}{% empty %}не указаны{% endfor %}
+    </p>
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'tours:booking_create' tour.pk %}">Забронировать тур</a></p>
+        {% if can_review %}
+            <p><a href="{% url 'tours:review_create' tour.pk %}">Оставить отзыв</a></p>
+        {% endif %}
+    {% endif %}
+    <h2>Отзывы</h2>
+    <ul>
+        {% for review in tour.reviews.all %}
+            <li><strong>{{ review.tourist.username }}</strong>: {{ review.text }}</li>
+        {% empty %}
+            <li>Отзывов пока нет.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
