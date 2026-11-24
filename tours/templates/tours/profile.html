@@ -1,0 +1,26 @@
+{% extends "tours/base.html" %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+    <h1>Личный кабинет</h1>
+    <p>Пользователь: {{ user.username }}</p>
+    <p>Email: {{ user.email|default:"Не указан" }}</p>
+    <p>Телефон: {{ profile.phone|default:"Не указан" }}</p>
+
+    <h2>Мои бронирования</h2>
+    {% for booking in bookings %}
+        <p>
+            {{ booking.tour.title }} — {{ booking.tour_date }} в {{ booking.start_time }}
+        </p>
+    {% empty %}
+        <p>Бронирований пока нет.</p>
+    {% endfor %}
+
+    <h2>Мои отзывы</h2>
+    {% for review in reviews %}
+        <p>{{ review.tour.title }}: {{ review.text }}</p>
+    {% empty %}
+        <p>Отзывов пока нет.</p>
+    {% endfor %}
+{% endblock %}

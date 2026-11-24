@@ -55,6 +55,23 @@ class SignUpView(View):
 
 
 @method_decorator(login_required(login_url="account_login"), name="dispatch")
+class ProfileView(View):
+    template_name = "tours/profile.html"
+
+    def get(self, request):
+        profile = getattr(request.user, "tourist_profile", None)
+        return render(
+            request,
+            self.template_name,
+            {
+                "profile": profile,
+                "bookings": request.user.tour_bookings.select_related("tour"),
+                "reviews": request.user.tour_reviews.select_related("tour"),
+            },
+        )
+
+
+@method_decorator(login_required(login_url="account_login"), name="dispatch")
 class BookingCreateView(View):
     template_name = "tours/booking_form.html"
 

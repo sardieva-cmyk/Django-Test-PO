@@ -110,13 +110,57 @@ class TourStartupTest(TestCase):
         self.assertFalse(User.objects.filter(username="new-tourist").exists())
 
     def test_login_post_authenticates_tourist(self):
+        """Успешный вход учитывает правильный ответ капчи."""
+        self.client.get(reverse("account_login"))
+        captcha_answer = self.client.session["login_captcha_answer"]
         response = self.client.post(
             reverse("account_login"),
-            {"username": "tourist", "password": "test-password-123"},
+            {
+                "username": "tourist",
+                "password": "test-password-123",
+                "captcha_answer": captcha_answer,
+            },
         )
 
         self.assertRedirects(response, reverse("tours:tour_list"))
         self.assertIn("_auth_user_id", self.client.session)
+
+    def test_login_post_rejects_wrong_captcha(self):
+        """Неверная капча не пропускает аутентифицированного пользователя."""
+        self.client.get(reverse("account_login"))
+        captcha_answer = self.client.session["login_captcha_answer"]
+        response = self.client.post(
+            reverse("account_login"),
+            {
+                "username": "tourist",
+                "password": "test-password-123",
+                "captcha_answer": captcha_answer + 1,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Неверный ответ на капчу")
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_profile_requires_login(self):
+        """Личный кабинет недоступен без входа."""
+        response = self.client.get(reverse("tours:profile"))
+
+        self.assertRedirects(
+            response,
+            f"{reverse('account_login')}?next={reverse('tours:profile')}",
+        )
+
+    def test_profile_shows_tourist_data(self):
+        """Личный кабинет показывает профиль и его данные."""
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("tours:profile"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Личный кабинет")
+        self.assertContains(response, "tourist")
+        self.assertContains(response, "+77001234567")
 
     def test_logout_post_ends_tourist_session(self):
         self.client.force_login(self.user)

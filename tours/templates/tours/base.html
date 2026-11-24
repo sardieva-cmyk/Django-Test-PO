@@ -9,6 +9,7 @@
         <a href="{% url 'tours:tour_list' %}">Туры</a>
         {% if user.is_authenticated %}
             <span>Здравствуйте, {{ user.username }}!</span>
+            <a href="{% url 'tours:profile' %}">Личный кабинет</a>
             <form method="post" action="{% url 'account_logout' %}">
                 {% csrf_token %}
                 <button type="submit">Выйти</button>

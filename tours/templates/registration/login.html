@@ -6,6 +6,9 @@
     <h1>Вход</h1>
     <form method="post">
         {% csrf_token %}
+        {% if request.session.login_captcha %}
+            <p><strong>Капча: {{ request.session.login_captcha }} = ?</strong></p>
+        {% endif %}
         {{ form.as_p }}
         <button type="submit">Войти</button>
     </form>

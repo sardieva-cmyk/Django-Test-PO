@@ -17,7 +17,16 @@ class Command(BaseCommand):
         output_file = options["output"]
         document = Document()
         document.add_heading("Документация тестов Django", level=0)
-        suite = DiscoverRunner(verbosity=0).build_suite()
+        runner = DiscoverRunner(verbosity=0)
+        failure_count = runner.run_tests(test_labels=None)
+        suite = runner.build_suite(test_labels=None)
+        document.add_heading("Результат запуска тестов", level=1)
+        if failure_count == 0:
+            document.add_paragraph("Все тесты пройдены успешно.")
+        else:
+            document.add_paragraph(
+                f"Есть ошибки или падения тестов: {failure_count}."
+            )
         current_app = None
         current_class = None
         test_count = 0

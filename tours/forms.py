@@ -1,11 +1,35 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
 from django.db import transaction
+import random
 
 from .models import Booking, Review, TouristProfile
 
 User = get_user_model()
+
+
+class CaptchaLoginForm(AuthenticationForm):
+    captcha_answer = forms.IntegerField(
+        label="Ответ на задачу",
+        help_text="Введите результат примера",
+    )
+
+    def __init__(self, *args, request=None, **kwargs):
+        super().__init__(*args, request=request, **kwargs)
+        if request is not None:
+            if "login_captcha_answer" not in request.session:
+                left = random.randint(1, 9)
+                right = random.randint(1, 9)
+                request.session["login_captcha"] = f"{left} + {right}"
+                request.session["login_captcha_answer"] = left + right
+
+    def clean_captcha_answer(self):
+        answer = self.cleaned_data["captcha_answer"]
+        expected = self.request.session.get("login_captcha_answer")
+        if expected is None or answer != expected:
+            raise forms.ValidationError("Неверный ответ на капчу.")
+        return answer
 
 
 class SignUpForm(UserCreationForm):

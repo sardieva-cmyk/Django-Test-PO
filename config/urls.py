@@ -3,6 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 
 from blog.views import BlogListView
+from tours.forms import CaptchaLoginForm
 
 
 urlpatterns = [
@@ -11,7 +12,10 @@ urlpatterns = [
     path("tours/", include("tours.urls")),
     path(
         "accounts/login/",
-        auth_views.LoginView.as_view(template_name="registration/login.html"),
+        auth_views.LoginView.as_view(
+            template_name="registration/login.html",
+            form_class=CaptchaLoginForm,
+        ),
         name="account_login",
     ),
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="account_logout"),
